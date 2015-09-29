@@ -2,13 +2,12 @@ require 'pry'
 
 
 board = (1..9).to_a
-#defined a variable
-#converted numbers 1 - 9 to an array
-
-#can player1 and player2 be to set equal to X and O be a global variable??
 
 
-# map, all?, any?
+Win = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],
+		[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+
+
 def prompt_player
 	puts "#{player}'s turn."
 	gets.chomp
@@ -24,15 +23,46 @@ end
 
 def greeting
 	puts "\nWelcome to Tic-Tac-Toe"
+	puts "Player 1 is X."
 end
 
 def player_name(player)
 	player
 end
 
-def game_over
+
+def game_over(board)
+	win?(board) || draw?(board)
 end
 
+def win?(board)
+	Win.any? do |x,y,z|
+		board[x] == board[y] && board[y] == board[z]
+	end
+end
+
+def draw?(board)
+	available_moves(board).empty?
+end
+
+def available_moves(board)
+	board.reject { |x| x.is_a?(String) }
+end
+
+
+def postmortem(board, current_player)
+	if win?(board)
+		winner = current_player
+		if current_player == "X"
+			current_player = "O"
+		else
+			current_player = "X"
+		end
+		puts "Game over. Player #{current_player} wins!"
+	else
+		puts "Draw. Game Over"
+	end
+end
 
 
 def tictactoe(board)
@@ -41,44 +71,16 @@ def tictactoe(board)
 	player_1 = "X"
 	player_2 = "O"
 	current_player = player_1
-	until false
-	puts "#{current_player}'s Turn"
-	board[gets.chomp.to_i-1] = current_player
-	show_board(board)
-	if current_player == player_1
-		current_player = player_2
-	else
-		current_player = player_1
+	until game_over(board)
+		puts "#{current_player}'s Turn"
+		board[gets.chomp.to_i-1] = current_player
+		show_board(board)
+		if current_player == player_1
+			current_player = player_2
+		else
+			current_player = player_1
+		end
 	end
-	end
+	postmortem(board, current_player)
 end
-
 tictactoe(board)
-=begin
-	
-def greeting....Welcome the players to the game of tictactoe.
-
-Ask the users for their names.
-
-Assign X or O to the user
-
-create tictactoe board
-
-def player_guess...recognizes when a player inputs a number in the array and
-switches that number in the array to an X or an O 
-
-def take_turn...switch player after each turn
-
-don't let the player guess the same value twice or one that other player has already selected
-
-recognize the values that cause a win.... 
-
-recognize when the game is a draw....
-
-restart game 
-
-
-
-
-	
-=end
